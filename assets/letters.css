@@ -56,7 +56,12 @@ img { max-width: 100%; height: auto; }
 .list strong { font-weight: 500; font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem); line-height: 1.15; text-wrap: balance; }
 .list .ex { color: var(--ink-soft); max-width: 60ch; }
 .list a:hover strong { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
-@media (max-width: 560px) { .list a { grid-template-columns: 5.5rem minmax(0, 1fr); } .list .ex { display: none; } }
+.list .d { padding-top: 0.35em; }
+@media (max-width: 560px) {
+  .list a { grid-template-columns: minmax(0, 1fr); gap: 0.3em; }
+  .list .thumb { display: none; }
+  .list .ex { display: none; }
+}
 
 /* single letter */
 .letter { max-width: var(--measure); margin: 0 auto; padding-block: clamp(16px, 4vw, 40px) clamp(32px, 6vw, 72px); }

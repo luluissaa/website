@@ -18,14 +18,16 @@
 <meta property="og:locale" content="en_CA">
 <meta property="og:title" content="Goblin Market: Goblins Everywhere Lab">
 <meta property="og:description" content="Goblin Market is an artists’ economic lab inspired by fairytales and fables, with labs, markets and artist-run nodes in Canada, Taiwan and the UK.">
-<meta property="og:image" content="https://goblinseverywhere.ca/og-image.png">
+<meta property="og:image" content="https://goblinseverywhere.ca/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The spiralling ‘goblins everywhere’ wordmark in blush on indigo, beside the words Goblin Market.">
+<meta property="og:image:alt" content="A hand drawing in crayon below a row of blue ‘goblins everywhere’ cards at Goblin Market Halifax.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Goblin Market: Goblins Everywhere Lab">
 <meta name="twitter:description" content="Goblin Market is an artists’ economic lab inspired by fairytales and fables, with labs, markets and artist-run nodes in Canada, Taiwan and the UK.">
-<meta name="twitter:image" content="https://goblinseverywhere.ca/og-image.png">
+<meta name="twitter:image" content="https://goblinseverywhere.ca/og-image.jpg">
+<meta name="twitter:image:alt" content="A hand drawing in crayon below a row of blue ‘goblins everywhere’ cards at Goblin Market Halifax.">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -36,7 +38,7 @@
    "name": "Goblin Market",
    "url": "https://goblinseverywhere.ca/",
    "logo": "https://goblinseverywhere.ca/apple-touch-icon.png",
-   "image": "https://goblinseverywhere.ca/og-image.png",
+   "image": "https://goblinseverywhere.ca/og-image.jpg",
    "alternateName": [
     "Goblins Everywhere",
     "Goblins Everywhere Lab"
@@ -181,6 +183,8 @@
   border: 0; object-fit: cover;
   opacity: 0; transition: opacity 0.8s ease;
 }
+/* oversize the YouTube frame so its title bar and controls fall outside the window */
+.bg iframe { transform: translate(-50%, -50%) scale(1.3); }
 .bg img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
 .bg .on { opacity: 1; }
 .bg-tint { position: fixed; inset: 0; z-index: 1; background: var(--tint); mix-blend-mode: var(--blend); pointer-events: none; display: none; }
@@ -680,17 +684,29 @@ const BACKGROUND = {
   window.onYouTubeIframeAPIReady = () => {
     const id = BACKGROUND.YOUTUBE_ID;
     const vars = { autoplay: 1, mute: 1, loop: 1, playlist: id, controls: 0, playsinline: 1,
-                   disablekb: 1, fs: 0, rel: 0, iv_load_policy: 3 };
+                   disablekb: 1, fs: 0, rel: 0, iv_load_policy: 3, cc_load_policy: 0 };
     if (/^https?:$/.test(location.protocol)) vars.origin = location.origin;
     const player = new YT.Player(holder, {
       videoId: id,
       host: 'https://www.youtube-nocookie.com',
       playerVars: vars,
       events: {
-        onReady: e => { e.target.mute(); e.target.playVideo(); },
+        onReady: e => {
+          e.target.mute();
+          e.target.playVideo();
+          // Keep the frame hidden until the video is genuinely running (past YouTube's
+          // play/pause flash), and loop a moment before the end so the end screen never shows.
+          setInterval(() => {
+            const t = player.getCurrentTime ? player.getCurrentTime() : 0;
+            const d = player.getDuration ? player.getDuration() : 0;
+            if (!videoOn && t > 0.6 && player.getPlayerState() === YT.PlayerState.PLAYING) playing(player.getIframe());
+            if (d && t > d - 0.5) player.seekTo(0, true);
+          }, 200);
+        },
         onStateChange: e => {
-          if (e.data === YT.PlayerState.PLAYING) playing(player.getIframe());
-          if (e.data === YT.PlayerState.ENDED) { e.target.seekTo(0); e.target.playVideo(); }
+          if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.CUED) {
+            e.target.seekTo(0, true); e.target.playVideo();
+          }
         },
         onError: e => usePhoto('YouTube error ' + e.data)
       }
