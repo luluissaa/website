@@ -1,6 +1,6 @@
 # Goblin Market website
 
-One-page site for Goblin Market and the Goblins Everywhere Lab, a Luisa Ji initiative delivered via UKAI Projects.
+Website for Goblin Market and the Goblins Everywhere Lab, a Luisa Ji initiative delivered via UKAI Projects.
 
 ## What's in this folder
 
@@ -11,7 +11,7 @@ One-page site for Goblin Market and the Goblins Everywhere Lab, a Luisa Ji initi
 | `assets/letters.css` | Styles for the archive pages. |
 | `assets/letters/` | Not used at the moment: the letters are text only. Holds the list of the original Ghost images, in case you want to bring them back later. |
 | `favicon.svg`, `apple-touch-icon.png` | Browser tab and phone home-screen icons. |
-| `og-image.png` | The preview image shown when the link is shared (Instagram, Slack, iMessage, LinkedIn). |
+| `og-image.jpg` | The preview image (a photo from Goblin Market Halifax) shown when the link is shared (Instagram, Slack, iMessage, LinkedIn). |
 | `404.html` | Shown for any wrong address. |
 | `robots.txt` | Lets search engines index the site. |
 | `set-site-url.py` | Run once the web address is decided (see step 3). |
@@ -60,4 +60,6 @@ The archive was converted from the Ghost export of 22 February 2026. All letters
 
 To bring the images back later, while the Ghost site (notesonend.ghost.io) is still online:
 1. In this folder run `python3 download-letter-images.py https://notesonend.ghost.io`.
-2. Ask Claude to regenerate the archive with images switched on. No new letters are planned, so the pages are plain HTML and need no build step.
+2. Ask Claude to regenerate the archive with images switched on.
+
+No new letters are planned, so the pages are plain HTML and need no build step.
